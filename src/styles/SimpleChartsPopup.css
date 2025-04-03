@@ -1,0 +1,94 @@
+/* Simple Charts Popup Styles */
+.charts-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.charts-popup-container {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1200px;
+  height: 90vh;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.charts-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.charts-popup-header h3 {
+  margin: 0;
+  color: #6d1945;
+}
+
+.charts-popup-header .close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+.charts-popup-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.popup-player-charts {
+  margin-bottom: 30px;
+}
+
+.popup-player-charts h4 {
+  margin: 0 0 15px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.popup-charts-row {
+  display: flex;
+  gap: 20px;
+}
+
+.popup-chart-column {
+  flex: 1;
+  min-width: 0; /* Prevent flex items from overflowing */
+}
+
+.popup-chart-column h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+
+/* Make charts responsive in the popup */
+.popup-chart-column .recharts-responsive-container {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+@media (max-width: 768px) {
+  .popup-charts-row {
+    flex-direction: column;
+    gap: 30px;
+  }
+}

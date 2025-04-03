@@ -1,0 +1,130 @@
+/* EnhancedFilters.css */
+.enhanced-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.multi-select-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 200px;
+  flex: 1;
+}
+
+.multi-select-container label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.multi-select-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background-color: white;
+}
+
+.multi-select-input.disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.multi-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.multi-select-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.multi-select-option:hover {
+  background-color: #f5f5f5;
+}
+
+.multi-select-option.selected {
+  background-color: #f0f0f0;
+}
+
+.multi-select-option input {
+  margin-right: 8px;
+}
+
+.select-all-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.select-all-option:hover {
+  background-color: #f0f0f0;
+}
+
+.placeholder {
+  color: #999;
+}
+
+.selected-values {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-arrow {
+  margin-left: 10px;
+  font-size: 10px;
+  color: #666;
+}
+
+/* Make filter items responsive */
+@media (max-width: 768px) {
+  .multi-select-container {
+    min-width: 100%;
+  }
+}
+
+/* Style for standard filter items (for LimitSelect) */
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-item label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.filter-item select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 150px;
+}

@@ -1,0 +1,37 @@
+.navbar {
+  background-color: #6d1945;
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: white !important;
+}
+
+.navbar-tabs {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.navbar-tab {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.navbar-tab:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-tab.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}

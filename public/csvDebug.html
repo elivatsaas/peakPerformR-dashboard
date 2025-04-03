@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CSV Debugger</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #333;
+      }
+      button {
+        padding: 10px 15px;
+        margin: 5px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .error {
+        color: red;
+        font-weight: bold;
+      }
+      .success {
+        color: green;
+        font-weight: bold;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        overflow: auto;
+        max-height: 400px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CSV File Debugger</h1>
+
+    <p>
+      Use this tool to check if your CSV files are correctly formatted and
+      accessible.
+    </p>
+
+    <div>
+      <button onclick="checkFile('/data/full_data.csv')">
+        Check full_data.csv
+      </button>
+      <button onclick="checkFile('/data/pqi.csv')">Check pqi.csv</button>
+      <button onclick="checkFile('/data/primes_raw.csv')">
+        Check primes_raw.csv
+      </button>
+      <button onclick="checkFile('/data/primes_splines.csv')">
+        Check primes_splines.csv
+      </button>
+    </div>
+
+    <div id="status"></div>
+    <div id="preview"></div>
+
+    <script>
+      function checkFile(filePath) {
+        const statusEl = document.getElementById("status");
+        const previewEl = document.getElementById("preview");
+
+        statusEl.innerHTML = `<p>Checking ${filePath}...</p>`;
+        previewEl.innerHTML = "";
+
+        fetch(filePath)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then((csvText) => {
+            statusEl.innerHTML += `<p class="success">File loaded successfully (${csvText.length} bytes)</p>`;
+
+            Papa.parse(csvText, {
+              header: true,
+              dynamicTyping: true,
+              skipEmptyLines: true,
+              complete: function (results) {
+                if (results.errors && results.errors.length > 0) {
+                  statusEl.innerHTML += `<p class="error">Parse warnings: ${results.errors.length}</p>`;
+                  results.errors.forEach((err) => {
+                    statusEl.innerHTML += `<p class="error">- ${err.message} (row ${err.row})</p>`;
+                  });
+                } else {
+                  statusEl.innerHTML += `<p class="success">CSV parsed successfully with no errors</p>`;
+                }
+
+                statusEl.innerHTML += `<p>Rows: ${results.data.length}</p>`;
+                statusEl.innerHTML += `<p>Fields: ${results.meta.fields.length}</p>`;
+
+                if (results.data.length > 0) {
+                  // Display the field names
+                  previewEl.innerHTML = "<h3>CSV Fields</h3>";
+                  previewEl.innerHTML += `<pre>${results.meta.fields.join(
+                    "\n"
+                  )}</pre>`;
+
+                  // Display a sample of the data
+                  previewEl.innerHTML += "<h3>First 5 Rows</h3>";
+
+                  // Create a table for the data
+                  let table = "<table><tr>";
+                  results.meta.fields.forEach((field) => {
+                    table += `<th>${field}</th>`;
+                  });
+                  table += "</tr>";
+
+                  for (let i = 0; i < Math.min(5, results.data.length); i++) {
+                    table += "<tr>";
+                    results.meta.fields.forEach((field) => {
+                      table += `<td>${
+                        results.data[i][field] !== undefined
+                          ? results.data[i][field]
+                          : ""
+                      }</td>`;
+                    });
+                    table += "</tr>";
+                  }
+
+                  table += "</table>";
+                  previewEl.innerHTML += table;
+                } else {
+                  previewEl.innerHTML =
+                    '<p class="error">No data rows found in the CSV!</p>';
+                }
+              },
+              error: function (error) {
+                statusEl.innerHTML += `<p class="error">Error parsing CSV: ${error}</p>`;
+              },
+            });
+          })
+          .catch((error) => {
+            statusEl.innerHTML = `<p class="error">Error loading file: ${error.message}</p>`;
+          });
+      }
+    </script>
+  </body>
+</html>

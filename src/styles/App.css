@@ -1,0 +1,61 @@
+.App {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff; /* Changed from #f5f5f7 to white */
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.loading {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.loading-message {
+  color: #666;
+  font-size: 16px;
+}
+
+.error-title {
+  color: #d32f2f;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 18px;
+  margin-bottom: 20px;
+  max-width: 800px;
+}
+
+.troubleshooting {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+  max-width: 800px;
+}
+
+.troubleshooting h3 {
+  margin-top: 0;
+}
+
+.troubleshooting code {
+  background-color: #f5f5f5;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+}

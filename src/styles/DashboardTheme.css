@@ -1,0 +1,291 @@
+/* DashboardTheme.css */
+/* Custom color theme for dashboard */
+
+:root {
+  --lavender: #dfa9de;
+  --gold: #e1ca44;
+  --purple: #8e538e;
+  --periwinkle: #a0a2de;
+  --dark-purple: #47335e;
+  --black: #000000;
+  --white: #ffffff;
+
+  --primary: var(--dark-purple);
+  --secondary: var(--purple);
+  --accent: var(--lavender);
+  --background: var(--white);
+  --card-bg: var(--white);
+  --light-accent: var(--gold);
+  --highlight: var(--lavender);
+  --text-dark: var(--black);
+  --text-light: var(--white);
+  --border-color: rgba(71, 51, 94, 0.2);
+}
+
+/* Main App */
+body {
+  background-color: var(--background);
+  color: var(--light-dark);
+}
+
+.App {
+  background-color: var(--background);
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--primary);
+  color: var(--text-light);
+}
+
+.navbar-tab {
+  color: var(--text-light);
+}
+
+.navbar-tab:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.navbar-tab.active {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  background-color: var(--background);
+}
+
+.dashboard-content {
+  background-color: var(--background);
+}
+
+/* Section Headers */
+.section-header h2 {
+  color: var(--primary);
+  border-bottom: 2px solid var(--accent);
+}
+
+/* Cards and Containers */
+.results-section {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 6px rgba(71, 51, 94, 0.1);
+}
+
+.player-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.player-header {
+  background-color: var(--primary);
+  color: var(--text-light);
+}
+
+.player-header h3 {
+  color: var(--text-light);
+}
+
+.chart-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.chart-container h4 {
+  color: var(--secondary);
+  margin-top: 0;
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Filters */
+.filters {
+  background-color: rgba(225, 202, 68, 0.15);
+  border: 1px solid var(--light-accent);
+}
+
+.filter-item label {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.filter-item select {
+  border: 1px solid var(--border-color);
+  background-color: var(--white);
+}
+
+/* Buttons & Interactive Elements */
+.view-toggles button {
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  color: var(--primary);
+}
+
+.view-toggles button.active {
+  background-color: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.view-toggles button:hover:not(.active) {
+  background-color: rgba(225, 202, 68, 0.15);
+}
+
+button {
+  background-color: var(--primary);
+  color: var(--text-light);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--secondary);
+}
+
+/* Search section */
+.search-container input {
+  border: 1px solid var(--border-color);
+}
+
+.search-results {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.search-result-item:hover {
+  background-color: rgba(225, 202, 68, 0.15);
+}
+
+.selected-player-item {
+  background-color: rgba(225, 202, 68, 0.2);
+  border: 1px solid var(--light-accent);
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table th {
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 10px;
+}
+
+table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px;
+}
+
+table tr:nth-child(even) {
+  background-color: rgba(225, 202, 68, 0.05);
+}
+
+table tr:hover {
+  background-color: rgba(225, 202, 68, 0.15);
+}
+
+/* Timeline */
+.timeline-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.timeline-label {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.timeline-bar {
+  background-color: rgba(160, 162, 222, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.timeline-age {
+  border-right: 1px solid rgba(71, 51, 94, 0.1);
+}
+
+.timeline-age .age-label {
+  color: var(--text-dark);
+}
+
+/* Error and Loading States */
+.loading-container {
+  background-color: var(--card-bg);
+}
+
+.loading {
+  color: var(--primary);
+}
+
+.loading-message {
+  color: var(--secondary);
+}
+
+.error-container {
+  background-color: var(--card-bg);
+}
+
+.error-title {
+  color: var(--secondary);
+}
+
+.no-chart-data {
+  color: var(--secondary);
+  text-align: center;
+  padding: 50px 20px;
+  background-color: rgba(223, 169, 222, 0.1);
+  border-radius: 4px;
+}
+
+/* Additional UI Elements */
+.age-selector-container {
+  background-color: rgba(225, 202, 68, 0.15);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.age-slider {
+  accent-color: var(--primary);
+}
+
+.league-selector button {
+  background-color: var(--periwinkle);
+  color: var(--text-dark);
+}
+
+.league-selector button.active {
+  color: var(--text-light);
+}
+
+/* Specific Components */
+.prime-stats .stat-box {
+  background-color: rgba(225, 202, 68, 0.15);
+  border: 1px solid var(--light-accent);
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.prime-stats .stat-value {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.prime-stats .stat-label {
+  color: var(--secondary);
+}
+
+/* This keeps original colors for the reference areas in charts */
+.recharts-reference-area {
+  opacity: 0.25 !important;
+}
