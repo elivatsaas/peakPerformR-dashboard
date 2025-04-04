@@ -1,163 +1,133 @@
+// dataLoader.js
 import Papa from "papaparse";
 
-// Helper to check if content is HTML
-const isHtmlContent = (text) => {
-  return (
-    text.trim().toLowerCase().startsWith("<!doctype html") ||
-    text.trim().toLowerCase().startsWith("<html")
-  );
+// Unified path configuration
+const CSV_PATHS = [
+  process.env.PUBLIC_URL + "/data/", // GitHub Pages compatible path
+  "/data/", // Local development fallback
+  "data/", // Relative path fallback
+];
+
+// Enhanced path validator
+const validateCSVPath = async (basePath) => {
+  try {
+    const testUrl = `${basePath}full_data.csv`;
+    const response = await fetch(testUrl);
+
+    // Check for valid response
+    if (!response.ok) {
+      console.debug(`Path ${basePath} invalid: HTTP ${response.status}`);
+      return false;
+    }
+
+    // Verify content type
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("text/csv")) {
+      console.debug(`Path ${basePath} invalid content type: ${contentType}`);
+      return false;
+    }
+
+    // Quick content check
+    const sampleText = (await response.text()).substring(0, 100);
+    if (sampleText.includes("<html")) {
+      console.debug(`Path ${basePath} returned HTML content`);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.debug(`Path ${basePath} validation failed:`, error.message);
+    return false;
+  }
 };
 
-export const loadCSV = (filePath) => {
-  return new Promise((resolve, reject) => {
-    console.log(`Attempting to load file: ${filePath}`);
+// Core CSV loader with improved error handling
+export const loadCSV = async (filePath) => {
+  try {
+    const response = await fetch(filePath);
 
-    fetch(filePath)
-      .then((response) => {
-        if (!response.ok) {
-          console.error(
-            `File not accessible: ${filePath} (${response.status})`
-          );
-          reject(
-            new Error(`File not accessible: ${filePath} (${response.status})`)
-          );
-          return null;
-        }
-        return response.text();
-      })
-      .then((text) => {
-        if (!text) return;
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+    }
 
-        // Check if we got HTML instead of CSV data
-        if (isHtmlContent(text)) {
-          console.error(`Received HTML instead of CSV data for ${filePath}`);
-          reject(
-            new Error(
-              `Received HTML instead of CSV data. The file '${filePath}' likely doesn't exist.`
-            )
-          );
-          return;
-        }
+    const text = await response.text();
+    const contentType = response.headers.get("content-type") || "";
 
-        console.log(
-          `File content preview (${filePath}): ${text.substring(0, 100)}...`
-        );
+    if (!contentType.includes("text/csv")) {
+      throw new Error(`Unexpected content type: ${contentType}`);
+    }
 
-        Papa.parse(text, {
-          header: true,
-          dynamicTyping: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            if (results.errors && results.errors.length > 0) {
-              console.warn(`Parse warnings for ${filePath}:`, results.errors);
-            }
-
-            console.log(
-              `Successfully parsed ${filePath}: ${results.data.length} rows`
-            );
-
-            if (results.data.length > 0) {
-              console.log(
-                `First row sample: ${JSON.stringify(results.data[0])}`
-              );
-            }
-
-            resolve(results.data);
-          },
-          error: (error) => {
-            console.error(`Error parsing ${filePath}:`, error);
-            reject(error);
-          },
-        });
-      })
-      .catch((error) => {
-        console.error(`Error loading file ${filePath}:`, error);
-        reject(error);
+    return new Promise((resolve, reject) => {
+      Papa.parse(text, {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          if (results.errors?.length > 0) {
+            console.warn(`CSV parse warnings for ${filePath}:`, results.errors);
+          }
+          resolve(results.data);
+        },
+        error: (error) =>
+          reject(new Error(`CSV parse failed: ${error.message}`)),
       });
-  });
+    });
+  } catch (error) {
+    throw new Error(`Failed to load ${filePath}: ${error.message}`);
+  }
 };
 
+// Main data loader
 export const loadAllData = async () => {
   try {
-    console.log("Starting data loading process...");
+    console.log("Initializing data load...");
 
-    // Define all possible paths to check in order of likelihood
-    const pathsToTry = [
-      "../../public/data/", // public/data/ in development
-      "data/", // data/ in the root
-      "/data/", // /data/ absolute path
-      "./data/", // ./data/ relative path
-      "../data/", // ../data/ up one directory
-      "../../data/", // ../../data/ up two directories
-      "/public/data/", // /public/data/ absolute
-      "", // root directory
-      "assets/data/", // assets/data/ common pattern
-      "static/data/", // static/data/ common pattern
-    ];
-
-    // For each path, try the most important file first (full_data.csv)
-    let workingPath = null;
-    for (const path of pathsToTry) {
-      try {
-        console.log(`Trying path: ${path}`);
-        const testResponse = await fetch(`${path}full_data.csv`);
-        const text = await testResponse.text();
-
-        // If we got HTML instead of CSV, this path doesn't work
-        if (isHtmlContent(text)) {
-          console.log(`Path ${path} returned HTML, not CSV`);
-          continue;
-        }
-
-        // If we get here, we found a working path!
-        console.log(`Found working path: ${path}`);
-        workingPath = path;
+    // Find valid base path
+    let basePath = null;
+    for (const path of CSV_PATHS) {
+      if (await validateCSVPath(path)) {
+        basePath = path;
         break;
-      } catch (error) {
-        console.log(`Path ${path} failed: ${error.message}`);
       }
     }
 
-    if (!workingPath) {
-      console.error("Could not find a working path for CSV files");
+    if (!basePath) {
       throw new Error(
-        "Could not locate your CSV files. Please ensure they exist and are accessible."
+        "CSV files not found. Verify: \n" +
+          "1. CSV files exist in public/data/ directory\n" +
+          "2. Server configuration allows access to /data/ endpoints\n" +
+          "3. Files have .csv extension and correct permissions"
       );
     }
 
-    console.log(`Using path: ${workingPath}`);
+    console.log(`Using base path: ${basePath}`);
 
-    // Now load all the data using the working path
-    const fullData = await loadCSV(`${workingPath}full_data.csv`);
-    const pqiData = await loadCSV(`${workingPath}pqi.csv`);
-    const primesRawData = await loadCSV(`${workingPath}primes_raw.csv`);
-    const primesSplineData = await loadCSV(`${workingPath}primes_splines.csv`);
-    const playerPredictions = await loadCSV(
-      `${workingPath}player_predictions.csv`
-    );
-    // New: Load CQI data
-    const cqiData = await loadCSV(`${workingPath}cqi.csv`);
-
-    console.log("All data loaded successfully!");
-    console.log(`Data summary:
-      - Full data: ${fullData.length} rows
-      - PQI data: ${pqiData.length} rows
-      - Primes raw data: ${primesRawData.length} rows
-      - Primes spline data: ${primesSplineData.length} rows
-      - Player predictions: ${playerPredictions.length} rows
-      - CQI data: ${cqiData.length} rows
-    `);
-
-    return {
-      fullData,
-      pqiData,
-      primesRawData,
-      primesSplineData,
-      playerPredictions,
-      cqiData, // Add CQI data to returned object
+    // Parallel loading for better performance
+    const loaders = {
+      fullData: loadCSV(`${basePath}full_data.csv`),
+      pqiData: loadCSV(`${basePath}pqi.csv`),
+      primesRawData: loadCSV(`${basePath}primes_raw.csv`),
+      primesSplineData: loadCSV(`${basePath}primes_splines.csv`),
+      playerPredictions: loadCSV(`${basePath}player_predictions.csv`),
+      cqiData: loadCSV(`${basePath}cqi.csv`),
     };
+
+    const results = await Promise.all(Object.values(loaders));
+
+    // Map results to keys
+    const data = Object.keys(loaders).reduce((acc, key, index) => {
+      acc[key] = results[index];
+      return acc;
+    }, {});
+
+    console.log("Data load complete. Summary:");
+    Object.entries(data).forEach(([key, value]) => {
+      console.log(`- ${key}: ${value.length} records`);
+    });
+
+    return data;
   } catch (error) {
-    console.error("Error in loadAllData:", error);
-    throw error;
+    console.error("Data load critical error:", error);
+    throw new Error(`Data initialization failed: ${error.message}`);
   }
 };
