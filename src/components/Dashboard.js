@@ -6,10 +6,12 @@ import LongestPrimes from "./LongestPrimes";
 import PrimeDistribution from "./PrimeDistribution";
 import AgingCurves from "./AgingCurves";
 import PrimeExplorer from "./PrimeExplorer";
+import PrimeIdentifier from "./PrimeIdentifier";
 import { getUniquePositions, getUniqueLeagues } from "../utils/dataProcessing";
 import "../styles/Dashboard.css";
 import { verifyDataStructure } from "../utils/dataVerify";
 import LandingPage from "./LandingPage";
+import { updatePrimeIndicators } from "../utils/dataHandlers";
 
 // New combined view components
 const PrimeAnalysis = ({ data, positions, leagues, filterProps }) => (
@@ -95,6 +97,7 @@ const Dashboard = ({ data }) => {
   const [positions, setPositions] = useState([]);
   const [leagues, setLeagues] = useState([]);
   const [dataError, setDataError] = useState(null);
+  const [modifiedData, setModifiedData] = useState(null); // Add this for PrimeIdentifier
 
   // Shared filter state for all components
   const [selectedSports, setSelectedSports] = useState([]);
@@ -109,6 +112,21 @@ const Dashboard = ({ data }) => {
       Boolean
     );
   }, [data]);
+
+  // Define the handler as a named function with console logs
+  const handleEnterDashboard = () => {
+    console.log("Enter dashboard button clicked");
+    // Force a refresh after state change
+    setTimeout(() => {
+      setShowLanding(false);
+      console.log("showLanding set to false");
+    }, 10);
+  };
+
+  // Monitor the showLanding state changes
+  useEffect(() => {
+    console.log("showLanding state changed to:", showLanding);
+  }, [showLanding]);
 
   // Process data and extract positions and leagues
   useEffect(() => {
@@ -218,12 +236,74 @@ const Dashboard = ({ data }) => {
     }
   };
 
+  // Add this function for PrimeIdentifier
+  const handlePrimeChange = (primeData) => {
+    if (!data || !primeData) return;
+
+    // If restoring original data
+    if (primeData.isOriginal) {
+      console.log("Restoring original prime data globally");
+      setModifiedData(null);
+      return;
+    }
+
+    // Create a new reference to avoid mutation
+    const updatedData = { ...data };
+
+    // Update primes in raw data
+    if (primeData.raw && primeData.raw.length > 0) {
+      // Update the raw primes data
+      updatedData.primesRawData = primeData.raw;
+    }
+
+    // Update spline primes
+    if (primeData.spline && primeData.spline.length > 0) {
+      updatedData.primesSplineData = primeData.spline;
+    }
+
+    // Update PQI data if provided
+    if (primeData.pqi && primeData.pqi.length > 0) {
+      updatedData.pqiData = primeData.pqi;
+    }
+
+    // Update CQI data if provided
+    if (primeData.cqi && primeData.cqi.length > 0) {
+      updatedData.cqiData = primeData.cqi;
+    }
+
+    // Update full data with new prime indicators if provided
+    if (primeData.fullData && primeData.fullData.length > 0) {
+      updatedData.fullData = primeData.fullData;
+    } else if (primeData.raw && primeData.raw.length > 0) {
+      // If full data wasn't provided but raw primes were, update the prime indicators
+      updatedData.fullData = updatePrimeIndicators(
+        updatedData.fullData,
+        primeData.raw
+      );
+    }
+
+    // Save the modified data
+    setModifiedData(updatedData);
+
+    console.log("Prime data updated globally");
+  };
+
+  // Get the correct data to use
+  const getCurrentData = () => {
+    return modifiedData || data;
+  };
+
+  // Use KEY in the LandingPage component to force a complete unmount/remount
   if (showLanding) {
-    return <LandingPage onEnterDashboard={() => setShowLanding(false)} />;
+    return (
+      <LandingPage key="landing-page" onEnterDashboard={handleEnterDashboard} />
+    );
   }
 
   const renderActiveTab = () => {
-    if (!data) return <div className="loading-message">Loading data...</div>;
+    const currentData = getCurrentData();
+    if (!currentData)
+      return <div className="loading-message">Loading data...</div>;
 
     // Show error message if there are data issues
     if (dataError) {
@@ -258,7 +338,7 @@ const Dashboard = ({ data }) => {
         case "playerComparison":
           return (
             <PlayerComparison
-              data={data}
+              data={currentData}
               positions={positions}
               leagues={leagues}
               {...filterProps}
@@ -268,7 +348,7 @@ const Dashboard = ({ data }) => {
           // Updated to use IndexExplorer (renamed from PQIExplorer)
           return (
             <IndexExplorer
-              data={data}
+              data={currentData}
               positions={positions}
               leagues={leagues}
               {...filterProps}
@@ -277,7 +357,7 @@ const Dashboard = ({ data }) => {
         case "primeAnalysis":
           return (
             <PrimeAnalysis
-              data={data}
+              data={currentData}
               positions={positions}
               leagues={leagues}
               filterProps={filterProps}
@@ -286,16 +366,23 @@ const Dashboard = ({ data }) => {
         case "agingPatterns":
           return (
             <AgingPatterns
-              data={data}
+              data={currentData}
               positions={positions}
               leagues={leagues}
               filterProps={filterProps}
             />
           );
+        case "primeIdentifier":
+          return (
+            <PrimeIdentifier
+              data={currentData}
+              onPrimeChange={handlePrimeChange}
+            />
+          );
         default:
           return (
             <PlayerComparison
-              data={data}
+              data={currentData}
               positions={positions}
               leagues={leagues}
               {...filterProps}
@@ -323,6 +410,14 @@ const Dashboard = ({ data }) => {
     <div className="dashboard-container">
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="dashboard-content">{renderActiveTab()}</div>
+      {modifiedData && (
+        <div className="modified-data-indicator">
+          Using modified prime definitions
+          <button onClick={() => setModifiedData(null)}>
+            Restore Original Data
+          </button>
+        </div>
+      )}
     </div>
   );
 };
