@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/peakPerformR-dashboard/static/css/main.25dd0463.css",
-    "main.js": "/peakPerformR-dashboard/static/js/main.bbb6ad9b.js",
+    "main.js": "/peakPerformR-dashboard/static/js/main.a9223f84.js",
     "index.html": "/peakPerformR-dashboard/index.html",
     "main.25dd0463.css.map": "/peakPerformR-dashboard/static/css/main.25dd0463.css.map",
-    "main.bbb6ad9b.js.map": "/peakPerformR-dashboard/static/js/main.bbb6ad9b.js.map"
+    "main.a9223f84.js.map": "/peakPerformR-dashboard/static/js/main.a9223f84.js.map"
   },
   "entrypoints": [
     "static/css/main.25dd0463.css",
-    "static/js/main.bbb6ad9b.js"
+    "static/js/main.a9223f84.js"
   ]
 }
