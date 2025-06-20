@@ -1,53 +1,66 @@
-# Athlete Prime Performance Dashboard
+# peakPerformR Dashboard
 
-An interactive React dashboard to visualize athlete prime performance data across multiple sports leagues. The dashboard analyzes when athletes reach their performance primes, how long these primes last, and compares these patterns across different sports, leagues, and positions.
+**Interactive web application for exploring athlete performance peaks across 6,000+ professional athletes**
 
-## Installation
+🔗 [Interactive Dashboard](https://elivatsaas.github.io/peakPerformR-dashboard/)
+🔗 [R Package](https://github.com/elivatsaas/peakPerformR)
 
-1. Clone this repository
-2. Install dependencies:
+---
 
+## What You Can Explore
+
+- **Search any athlete** from 6,000+ professionals across 9 leagues
+- **Compare career trajectories** between players and leagues  
+- **Analyze peak timing patterns** - when do athletes reach their prime?
+- **Examine prime duration** - Chess: 4.6 years vs NHL: 2.2 years
+- **Adjust analysis parameters** in real-time
+
+## Key Findings
+
+- **Chess players** maintain peak performance 2x longer than hockey players (4.6 vs 2.2 years)
+- **Peak ages vary** from 24.1 years (MLS) to 26.4 years (Chess Male)  
+- **Prime duration ranges** from 2.2 years (NHL) to 4.6 years (Chess Male)
+
+---
+
+## Quick Start
+
+### Use Online
+Visit the [Live Dashboard](https://elivatsaas.github.io/peakPerformR-dashboard/) and start exploring immediately.
+
+### Run Locally
 ```bash
+git clone https://github.com/elivatsaas/peakPerformR-dashboard.git
+cd peakPerformR-dashboard
 npm install
-```
-
-3. Place your CSV data files in the `public/data` directory:
-
-   - full_data.csv
-   - pqi.csv
-   - primes_raw.csv
-   - primes_splines.csv
-
-4. Start the development server:
-
-```bash
 npm start
 ```
 
-## Dependencies
+Open http://localhost:3000
 
-This project uses the following dependencies:
+---
 
-- React
-- Recharts for visualizations
-- Papaparse for CSV parsing
-- Lodash for data manipulation
-- Bootstrap for styling (optional)
+## Features
 
-peakPerformR-dashboard/
-├── node_modules/
-├── public/
-│ ├── index.html
-│ ├── data/ <-- This folder is critical
-│ │ ├── full_data.csv
-│ │ ├── pqi.csv
-│ │ ├── primes_raw.csv
-│ │ └── primes_splines.csv
-│ └── ...
-├── src/
-│ ├── App.js
-│ ├── index.js
-│ ├── components/
-│ ├── utils/
-│ └── styles/
-└── package.json
+- **Real-time parameter adjustment** via API integration
+- **Interactive visualizations** with career trajectory plots
+- **Multi-player comparisons** on the same chart
+- **League-wide statistics** and comparisons
+- **Filter functionality** to explore sports, leagues, and positions
+
+---
+
+## Technology
+
+- **React** - Frontend framework
+- **Recharts** - Interactive charts
+- **Plumber API** - R-based backend for real-time calculations
+- **peakPerformR Package** - Core analysis engine
+
+
+---
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
